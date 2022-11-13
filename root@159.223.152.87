@@ -1,0 +1,39 @@
+version: '3'
+services:
+  mysql_db:
+    image: mysql
+    container_name: mysql_db
+    env_file: .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
+      - MYSQL_DATABASE=$DB_DATABASE
+    ports:
+      - $DB_PORT:$DB_PORT
+    volumes:
+      - mysql_db:/var/lib/mysql
+    networks:
+      - node-network
+  app:
+    depends_on:
+      - mysql_db
+    image: luanhuu2000/movie:v1
+    container_name: const-node
+    env_file: .env
+    environment:
+      - DB_HOST=mysql_db
+      - DB_DATABASE=$DB_DATABASE
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_DIALECT=$DB_DIALECT
+      - DB_PORT=$DB_PORT
+    ports:
+      - "3030:8080"
+    networks:
+      - node-network
+
+volumes:
+  mysql_db:
+    driver: local
+
+networks:
+  node-network:
