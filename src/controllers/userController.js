@@ -11,38 +11,6 @@ const getUser = async (req, res) => {
   res.send(data);
 };
 
-const getUserByName = async (req, res) => {
-  try {
-    const { name } = req.params;
-    const checkName = await model.user.findAll({
-      where: {
-        name: {
-          [Op.like]: `%${name}%`,
-        },
-      },
-    });
-    if (checkName) res.status(200).send(checkName);
-    else errorCode(res, "Không có thông tin cần tìm");
-  } catch {
-    failCode(res);
-  }
-};
-
-const getInforUser = async (req, res) => {
-  try {
-    const { email } = req.body;
-    const checkEmail = await model.user.findOne({
-      where: {
-        email: email,
-      },
-    });
-    if (checkEmail) res.status(200).send(checkEmail);
-    else errorCode(res, "Không có thông tin cần tìm");
-  } catch {
-    failCode(res);
-  }
-};
-
 const createUser = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -62,68 +30,8 @@ const createUser = async (req, res) => {
     } else {
       const data = await model.user.create(object);
 
-      if (data) successCode(res, "Tạo thông tin người thành công");
-      else errorCode(res, "Tạo thông tin người thất bại");
-    }
-  } catch {
-    failCode(res);
-  }
-};
-
-const updateUser = async (req, res) => {
-  try {
-    const { name, email, phone, password, role_id } = req.body;
-
-    let object = {
-      name,
-      email,
-      phone,
-      password: authController.hashPass(password),
-      role_id: role_id,
-    };
-    const checkEmail = await model.user.findAll({
-      where: {
-        email: email,
-      },
-    });
-
-    if (checkEmail.length > 0) {
-      const data = await model.user.update(object, {
-        where: {
-          email: email,
-        },
-      });
-
-      if (data) successCode(res, "Sửa thông tin người thành công");
-      else errorCode(res, "Sửa thông tin người thất bại");
-    } else {
-      errorCode(res, "Email không tồn tại");
-    }
-  } catch {
-    failCode(res);
-  }
-};
-
-const deleteUser = async (req, res) => {
-  try {
-    const { email } = req.body;
-    const checkEmail = await model.user.findAll({
-      where: {
-        email: email,
-      },
-    });
-
-    if (checkEmail.length > 0) {
-      const data = await model.user.destroy({
-        where: {
-          email: email,
-        },
-      });
-
-      if (data) successCode(res, "Xoá user thành công");
-      else errorCode(res, "Xoá user thất bại");
-    } else {
-      errorCode(res, "Email không tồn tại");
+      if (data) successCode(res, "Đăng kí thông tin người thành công");
+      else errorCode(res, "Đăng kí thông tin người thất bại");
     }
   } catch {
     failCode(res);
@@ -188,11 +96,6 @@ const login = async (req, res) => {
 
 module.exports = {
   getUser,
-  getUserByName,
-  getInforUser,
   createUser,
-  updateUser,
-  deleteUser,
-  signUp,
   login,
 };
